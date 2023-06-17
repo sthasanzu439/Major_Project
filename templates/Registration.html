@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Registration Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    h2 {
+      text-align: center;
+      margin-top: 0;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    
+    .form-group input[type="submit"] {
+      background-color: #4CAF50;
+      color: #fff;
+      cursor: pointer;
+    }
+    
+    .form-group input[type="submit"]:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Registration Form</h2>
+    <form id="registrationForm">
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <div class="form-group">
+        <input type="submit" value="Register">
+      </div>
+    </form>
+  </div>
+
+  <!-- Firebase SDK -->
+      <!-- The core Firebase JS SDK is always required and must be listed first -->
+      <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+
+      <!-- TODO: Add SDKs for Firebase products that you want to use
+           https://firebase.google.com/docs/web/setup#available-libraries -->
+      <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+  
+      <!-- Our script must be loaded after firebase references -->
+      <script>
+    // Initialize Firebase
+    var firebaseConfig = {
+        apiKey: "AIzaSyANojbVDYWMARht3M2kh5f1UTmfC2O6knY",
+        authDomain: "crypto-517f4.firebaseapp.com",
+        projectId: "crypto-517f4",
+        storageBucket: "crypto-517f4.appspot.com",
+        messagingSenderId: "767919793743",
+        appId: "1:767919793743:web:5a0c38b7da7c003a5aec3a",
+        measurementId: "G-S6K1K37W9C"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth()
+
+    // Get a reference to the database
+    const database = firebase.database();
+
+    // Handle form submission
+    const registrationForm = document.getElementById('registrationForm');
+    registrationForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      // Get form values
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+  // Create user with email and password
+  firebase.auth().createUserWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      // Get the user ID
+      const userId = userCredential.user.uid;
+
+      // Store additional user data in the database
+      database.ref('users/' + userId).set({
+        name: name,
+        email: email
+      })
+      .then(() => {
+        alert("Registration successful!");
+        registrationForm.reset();
+        
+        // Redirect to another page
+        window.location.href = "{{ url_for('login') }}";
+      })
+      .catch((error) => {
+        console.error("Error storing data:", error);
+      });
+    })
+    .catch((error) => {
+      console.error("Error creating user:", error);
+      alert("An error occurred during registration. Please try again.");
+    });
+});
+  </script>
+</body>
+</html>
