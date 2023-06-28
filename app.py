@@ -46,6 +46,12 @@ from Encryption import Encryption
 from Preprocessing import Preprocessing
 from steanov_2 import STEANOGRAPHY
 
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+from flask import Flask, render_template, send_file
+
 
 from  flask import  Flask,render_template,url_for,abort,make_response,message_flashed,redirect,request
 import os
@@ -457,13 +463,27 @@ def login():
 def register():
     return render_template('Registration.html')
 
+@app.route('/audio_encrypt_decrypt', methods=['GET', 'POST'])
+def audio_encrypt_decrypt():
+    if request.method == 'POST':
+        # Retrieve the text and audio file from the form
+        text = request.form['text']
+        audio = request.files['audio']
+
+        # Perform audio encryption and decryption operations
+        # Use the text and audio to encrypt and decrypt data
+
+        # Return the encrypted and decrypted results
+        return render_template('audio_result.html', encrypted_text=encrypted_text, decrypted_text=decrypted_text)
+    else:
+        return render_template('audio_encrypt_decrypt.html')
+
 
 
 @app.route('/encrypt',methods=['GET'])
 def encrypt():
 	return render_template("Encrypt.html")
 	#Encrypt.html
-
 
 # @app.route('/encrypt',methods=['POST'])
 # def decrypt():
